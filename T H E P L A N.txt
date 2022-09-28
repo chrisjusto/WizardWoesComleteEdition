@@ -1,0 +1,31 @@
+
+New Mechanics
+	
+	Wall Hop
+	Power up per level (megaman style)
+	
+Levels
+
+	Intro Level
+		Castle Level [ remenisnt of Wizard Woes GB edition ]
+			Mini Boss - Owl
+			Boss - The Faceless Medusa
+	
+	Stage Select
+		Level 1 - Jungle
+			Mini Boss	Dinosour
+			Boss 		Garfield Wurm
+		Level 2 - Wet Ruin
+			Mini Boss 	Drowned Corpse Tenticle thing
+			Boss		Minflayer Pirate
+		Level 3 - Sewer
+			Mini Boss	Rat
+			Boss		Land Shark [ Gyo ]
+		Level 4 - Train
+			Mini Boss	WereWolf Conductor
+			Boss		Fight the Train
+		
+	Final Stage
+		Hot Castle [ lava ]
+			Mini Boss	Shadow Player
+			Boss		Muti Stage Horror

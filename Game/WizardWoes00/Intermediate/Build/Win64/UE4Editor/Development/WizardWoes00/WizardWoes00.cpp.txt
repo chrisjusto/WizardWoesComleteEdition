@@ -1,0 +1,2 @@
+C:\Users\chris\Documents\WizardWoesComleteEdition\Game\WizardWoes00\Intermediate\Build\Win64\UE4Editor\Development\WizardWoes00\Definitions.WizardWoes00.h
+c:\users\chris\documents\wizardwoescomleteedition\game\wizardwoes00\source\wizardwoes00\WizardWoes00.h
