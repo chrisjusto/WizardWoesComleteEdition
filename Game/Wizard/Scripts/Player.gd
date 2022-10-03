@@ -94,6 +94,7 @@ func WallCheck ():
 					if motion.y > 0:
 						if Input.is_action_just_pressed("jump"):
 							WallJumpInput(isright)
+							isonwall = false
 				else:
 					activegravity=gravity
 					isonwall = false
