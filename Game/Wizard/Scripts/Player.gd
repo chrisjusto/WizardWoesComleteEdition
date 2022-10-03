@@ -7,8 +7,8 @@ const maxfallspeed = 200
 const maxspeed = 100
 const jump = [450,400,350,320,290,250,200,150]
 const jumpend = 150
-const walljumpvelocityX = [300,290,245,220,220,200,200,0]
-const walljumpvelocityY = [500,450,400,320,290,250,200,150]
+const walljumpvelocityX = [200,100,50,75,220,200,200,0]
+const walljumpvelocityY = [450,375,250,150,290,250,200,150]
 #variables
 var motion = Vector2()
 var isright = true
@@ -19,10 +19,10 @@ var isonwall = false
 var wallslideinterval = 0
 var iswalljumping = false
 var walljumpincrement = 0
-var walljumpjustended = false
+var lockmovement = false
 onready var wallcheck = get_node("WallCheck")
 
-#Function to move the player left or right
+#Movement
 func Move(MaxSpeed, IsRight, Anim):
 	if is_on_floor():
 		isonwall = false
@@ -31,18 +31,15 @@ func Move(MaxSpeed, IsRight, Anim):
 		$AnimationPlayer.play(Anim)
 	else:
 		if iswalljumping == false:
-			if isonwall == false:
-				if walljumpjustended == true:
-					motion.x = lerp(motion.x,MaxSpeed,0.7)
-					isright = IsRight
-					$AnimationPlayer.play(Anim)
-					walljumpjustended = false
-				else:
-					motion.x = lerp(motion.x,MaxSpeed,0.05)
-					isright = IsRight
-					$AnimationPlayer.play(Anim)
-
-#Functionto rotate the player sprite
+			motion.x = lerp(motion.x,MaxSpeed,0.05)
+			isright = IsRight
+			$AnimationPlayer.play(Anim)
+		else:
+			if lockmovement == false:
+				motion.x = lerp(motion.x, MaxSpeed, .75)
+				isright=IsRight
+				$AnimationPlayer.play(Anim)
+#Animation Stuff
 func RotateSprite (Direction):
 	if Direction == true:
 		$Sprite.scale.x = 1
@@ -52,36 +49,57 @@ func RotateSprite (Direction):
 		$Sprite.scale.x = -1
 		wallcheck.scale.x= -1
 		isright = false
-
-#Function to call *Jump*
+func AirAnimation():
+	if motion.y > 0:
+		$AnimationPlayer.play("FallIdle")
+	else:
+		$AnimationPlayer.play("JumpIdle")
+#Jump stuff
 func JumpInput():
 	motion.y = -jump[0]
 	jumpincrement = jumpincrement + 1
 	canjump = true
-
-#Function while activly jumping
 func Jump ():
 	if jumpincrement < 8:
 		motion.y = -jump[jumpincrement]
 		jumpincrement = jumpincrement + 1
 	else:
 		JumpEnd()
-		
 func JumpEnd():
 		motion.y = -jumpend
 		canjump = false
 		jumpincrement = 0
-		
+#Walljump Shit
 func WallslideGravity():
 	motion.y = (activegravity/5)+wallslideinterval
 	wallslideinterval = wallslideinterval + 2	
 func WallCheck ():
 	if wallcheck.is_colliding():
-		isonwall = true
-		$AnimationPlayer.play("WallSlide")
-		if motion.y > 0:
-			if Input.is_action_just_pressed("jump"):
-				WallJumpInput(isright)
+		if iswalljumping == false:
+			if isright == true:
+				if Input.is_action_pressed("right"):
+					isonwall = true
+					$AnimationPlayer.play("WallSlide")
+					if motion.y > 0:
+						if Input.is_action_just_pressed("jump"):
+							WallJumpInput(isright)
+							isonwall = false
+				else:
+					activegravity=gravity
+					isonwall = false
+			else:
+				if Input.is_action_pressed("left"):
+					isonwall = true
+					$AnimationPlayer.play("WallSlide")
+					if motion.y > 0:
+						if Input.is_action_just_pressed("jump"):
+							WallJumpInput(isright)
+				else:
+					activegravity=gravity
+					isonwall = false
+		else:
+			activegravity=gravity
+			isonwall = false
 	else:
 		activegravity=gravity
 		isonwall = false
@@ -89,39 +107,36 @@ func WallJumpInput (Direction):
 	if Direction == true:
 		motion.x = walljumpvelocityX[0]
 		motion.y = -walljumpvelocityY[0]
-		RotateSprite(false)
 	else:
 		motion.x = -walljumpvelocityX[0]
 		motion.y = -walljumpvelocityY[0]
-		RotateSprite(true) 
 	iswalljumping = true
 func WallJump (Direction):
 	walljumpincrement = walljumpincrement + 1
-	if walljumpincrement < 5:
+	if walljumpincrement < 8:
 		if Direction == true:
-			motion.x = walljumpvelocityX[walljumpincrement]
+			if walljumpincrement < 3:
+				lockmovement = true
+				motion.x = walljumpvelocityX[walljumpincrement]
+			else:
+				lockmovement = false
 			motion.y = -walljumpvelocityY[walljumpincrement]
 		else:
-			motion.x = -walljumpvelocityX[walljumpincrement]
+			if walljumpincrement < 3:
+				motion.x = -walljumpvelocityX[walljumpincrement]
+				lockmovement = true
+			else:
+				lockmovement = false
 			motion.y = -walljumpvelocityY[walljumpincrement]
 	else:
 		iswalljumping = false
 		walljumpincrement = 0
-		walljumpjustended = true
-
+#gravity shit
 func Gravity ():
 	#wallslide gravity or regular gravity
 	if isonwall == true:
-		if isright == true:
-			if Input.is_action_pressed("right"):
-				WallslideGravity()
-			else: 
-				motion.y += activegravity
-		else:
-			if Input.is_action_pressed("left"):
-				WallslideGravity()
-			else:
-				motion.y += activegravity			
+		motion.y = (activegravity/5)+wallslideinterval
+		wallslideinterval = wallslideinterval + 2
 	else:
 		motion.y += activegravity
 		wallslideinterval = 0
@@ -129,11 +144,7 @@ func Gravity ():
 	if motion.y > maxfallspeed:
 		motion.y = maxfallspeed	
 
-func AirAnimation():
-	if motion.y > 0:
-		$AnimationPlayer.play("FallIdle")
-	else:
-		$AnimationPlayer.play("JumpIdle")
+
 
 
 ####################BEGIN PLAY#############################
@@ -158,8 +169,9 @@ func _physics_process(delta):
 		else:
 			motion.x = lerp(motion.x,0,0.1)
 
+	RotateSprite(isright)
+
 	if is_on_floor():
-		RotateSprite(isright)
 		motion.x = clamp(motion.x,-maxspeed,maxspeed)
 		if Input.is_action_just_pressed("jump"):
 			JumpInput()
