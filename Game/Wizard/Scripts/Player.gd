@@ -20,6 +20,7 @@ var wallslideinterval = 0
 var iswalljumping = false
 var walljumpincrement = 0
 var lockmovement = false
+var wallgraceperiod = 0
 onready var wallcheck = get_node("WallCheck")
 
 #Movement
@@ -30,15 +31,16 @@ func Move(MaxSpeed, IsRight, Anim):
 		isright = IsRight
 		$AnimationPlayer.play(Anim)
 	else:
-		if iswalljumping == false:
-			motion.x = lerp(motion.x,MaxSpeed,0.05)
-			isright = IsRight
-			$AnimationPlayer.play(Anim)
-		else:
-			if lockmovement == false:
-				motion.x = lerp(motion.x, MaxSpeed, .75)
-				isright=IsRight
+		if isonwall == false:
+			if iswalljumping == false:
+				motion.x = lerp(motion.x,MaxSpeed,0.05)
+				isright = IsRight
 				$AnimationPlayer.play(Anim)
+			else:
+				if lockmovement == false:
+					motion.x = lerp(motion.x, MaxSpeed, .75)
+					isright=IsRight
+					$AnimationPlayer.play(Anim)
 #Animation Stuff
 func RotateSprite (Direction):
 	if Direction == true:
@@ -85,8 +87,17 @@ func WallCheck ():
 							WallJumpInput(isright)
 							isonwall = false
 				else:
-					activegravity=gravity
-					isonwall = false
+					if isonwall == true:
+						if wallgraceperiod < 7:
+							wallgraceperiod = wallgraceperiod + 1
+							$AnimationPlayer.play("WallSlide")
+							if Input.is_action_just_pressed("jump"):
+								WallJumpInput(isright)
+								isonwall = false
+						else:
+							print ("endgraceperiod")
+							isonwall = false
+							activegravity = gravity
 			else:
 				if Input.is_action_pressed("left"):
 					isonwall = true
@@ -96,8 +107,17 @@ func WallCheck ():
 							WallJumpInput(isright)
 							isonwall = false
 				else:
-					activegravity=gravity
-					isonwall = false
+					if isonwall == true:
+						if wallgraceperiod < 7:
+							wallgraceperiod = wallgraceperiod + 1
+							$AnimationPlayer.play("WallSlide")
+							if Input.is_action_just_pressed("jump"):
+								WallJumpInput(isright)
+								isonwall = false
+						else:
+							print ("endgraceperiod")
+							isonwall = false
+							activegravity = gravity
 		else:
 			activegravity=gravity
 			isonwall = false
@@ -141,6 +161,7 @@ func Gravity ():
 	else:
 		motion.y += activegravity
 		wallslideinterval = 0
+		wallgraceperiod = 0
 	#ensure we never fall faster than intended
 	if motion.y > maxfallspeed:
 		motion.y = maxfallspeed	
