@@ -6,6 +6,16 @@
 
 [node name="World" type="Node2D"]
 
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 16, -48 )
+scale = Vector2( 43, 2.25 )
+z_index = -1
+texture = ExtResource( 3 )
+hframes = 17
+__meta__ = {
+"_edit_group_": true
+}
+
 [node name="Player" parent="." instance=ExtResource( 2 )]
 z_index = 1
 
@@ -22,10 +32,3 @@ offset = Vector2( 0, -48 )
 current = true
 zoom = Vector2( 0.367, 0.367 )
 smoothing_enabled = true
-
-[node name="Sprite" type="Sprite" parent="."]
-position = Vector2( 20, -52 )
-scale = Vector2( 43, 2.25 )
-z_index = -1
-texture = ExtResource( 3 )
-hframes = 17
