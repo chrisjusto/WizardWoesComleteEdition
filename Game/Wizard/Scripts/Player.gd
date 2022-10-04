@@ -21,6 +21,7 @@ var iswalljumping = false
 var walljumpincrement = 0
 var lockmovement = false
 var wallgraceperiod = 0
+var wallanimationplaying = false
 onready var wallcheck = get_node("WallCheck")
 
 #Movement
@@ -53,7 +54,8 @@ func RotateSprite (Direction):
 		isright = false
 func AirAnimation():
 	if motion.y > 0:
-		$AnimationPlayer.play("FallIdle")
+		if isonwall == false:
+			$AnimationPlayer.play("FallIdle")
 	else:
 		$AnimationPlayer.play("JumpIdle")
 #Jump stuff
@@ -81,7 +83,8 @@ func WallCheck ():
 			if isright == true:
 				if Input.is_action_pressed("right"):
 					isonwall = true
-					$AnimationPlayer.play("WallSlide")
+					#$AnimationPlayer.play("wall")
+					print("wall")
 					if motion.y > 0:
 						if Input.is_action_just_pressed("jump"):
 							WallJumpInput(isright)
@@ -90,7 +93,7 @@ func WallCheck ():
 					if isonwall == true:
 						if wallgraceperiod < 7:
 							wallgraceperiod = wallgraceperiod + 1
-							$AnimationPlayer.play("WallSlide")
+							#$AnimationPlayer.play("wall")
 							if Input.is_action_just_pressed("jump"):
 								WallJumpInput(isright)
 								isonwall = false
@@ -101,7 +104,7 @@ func WallCheck ():
 			else:
 				if Input.is_action_pressed("left"):
 					isonwall = true
-					$AnimationPlayer.play("WallSlide")
+					#$AnimationPlayer.play("wall")
 					if motion.y > 0:
 						if Input.is_action_just_pressed("jump"):
 							WallJumpInput(isright)
@@ -110,7 +113,7 @@ func WallCheck ():
 					if isonwall == true:
 						if wallgraceperiod < 7:
 							wallgraceperiod = wallgraceperiod + 1
-							$AnimationPlayer.play("WallSlide")
+							#$AnimationPlayer.play("wall")
 							if Input.is_action_just_pressed("jump"):
 								WallJumpInput(isright)
 								isonwall = false
@@ -178,7 +181,6 @@ func _physics_process(delta):
 
 	#DO GRAVITY
 	Gravity()
-	
 	#movement
 	if Input.is_action_pressed("right"):
 		Move(maxspeed, true, "Run")
@@ -210,6 +212,11 @@ func _physics_process(delta):
 					Jump()
 				else:
 					JumpEnd()
+	if isonwall ==true:
+		$AnimationPlayer.play("wall")
+		#$AnimationPlayer.playback_speed(wallslideinterval/10)
+	#else:
+		#$AnimationPlayer.playback_speed(1)
 
 	#If Moveinput is pressed call move
 	
