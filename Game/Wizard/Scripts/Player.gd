@@ -23,25 +23,26 @@ var lockmovement = false
 var wallgraceperiod = 0
 var wallanimationplaying = false
 onready var wallcheck = get_node("WallCheck")
-
+onready var Animator = get_node("AnimationPlayer")
+onready var CeilingCheck = get_node("CeilingCheck")
+enum States {Idle, Walking, OnWall, Jumping, Falling}
+var AnimState = States.Idle
 #Movement
-func Move(MaxSpeed, IsRight, Anim):
+func Move(MaxSpeed, IsRight):
 	if is_on_floor():
 		isonwall = false
 		motion.x = lerp(motion.x,MaxSpeed,0.05)
 		isright = IsRight
-		$AnimationPlayer.play(Anim)
+		AnimState = States.Walking
 	else:
 		if isonwall == false:
 			if iswalljumping == false:
 				motion.x = lerp(motion.x,MaxSpeed,0.05)
 				isright = IsRight
-				$AnimationPlayer.play(Anim)
 			else:
 				if lockmovement == false:
 					motion.x = lerp(motion.x, MaxSpeed, .75)
 					isright=IsRight
-					$AnimationPlayer.play(Anim)
 #Animation Stuff
 func RotateSprite (Direction):
 	if Direction == true:
@@ -55,22 +56,25 @@ func RotateSprite (Direction):
 func AirAnimation():
 	if motion.y > 0:
 		if isonwall == false:
-			$AnimationPlayer.play("FallIdle")
+			AnimState = States.Falling
 	else:
-		$AnimationPlayer.play("JumpIdle")
+		AnimState = States.Jumping
 #Jump stuff
 func JumpInput():
 	motion.y = -jump[0]
 	jumpincrement = jumpincrement + 1
 	canjump = true
 func Jump ():
-	if jumpincrement < 8:
-		motion.y = -jump[jumpincrement]
-		jumpincrement = jumpincrement + 1
+	if CeilingCheck.is_colliding(): #Bonk check goes here
+		JumpEnd(0)
 	else:
-		JumpEnd()
-func JumpEnd():
-		motion.y = -jumpend
+		if jumpincrement < 8:
+			motion.y = -jump[jumpincrement]
+			jumpincrement = jumpincrement + 1
+		else:
+			JumpEnd(-jumpend)
+func JumpEnd(Direction):
+		motion.y = Direction
 		canjump = false
 		jumpincrement = 0
 #Walljump Shit
@@ -83,8 +87,6 @@ func WallCheck ():
 			if isright == true:
 				if Input.is_action_pressed("right"):
 					isonwall = true
-					#$AnimationPlayer.play("wall")
-					print("wall")
 					if motion.y > 0:
 						if Input.is_action_just_pressed("jump"):
 							WallJumpInput(isright)
@@ -93,18 +95,15 @@ func WallCheck ():
 					if isonwall == true:
 						if wallgraceperiod < 7:
 							wallgraceperiod = wallgraceperiod + 1
-							#$AnimationPlayer.play("wall")
 							if Input.is_action_just_pressed("jump"):
 								WallJumpInput(isright)
 								isonwall = false
 						else:
-							print ("endgraceperiod")
 							isonwall = false
 							activegravity = gravity
 			else:
 				if Input.is_action_pressed("left"):
 					isonwall = true
-					#$AnimationPlayer.play("wall")
 					if motion.y > 0:
 						if Input.is_action_just_pressed("jump"):
 							WallJumpInput(isright)
@@ -113,12 +112,10 @@ func WallCheck ():
 					if isonwall == true:
 						if wallgraceperiod < 7:
 							wallgraceperiod = wallgraceperiod + 1
-							#$AnimationPlayer.play("wall")
 							if Input.is_action_just_pressed("jump"):
 								WallJumpInput(isright)
 								isonwall = false
 						else:
-							print ("endgraceperiod")
 							isonwall = false
 							activegravity = gravity
 		else:
@@ -168,28 +165,38 @@ func Gravity ():
 	#ensure we never fall faster than intended
 	if motion.y > maxfallspeed:
 		motion.y = maxfallspeed	
-
-
-
+#Handles them Animations
+func HandleAnimation ():
+	match AnimState:
+		States.Idle:
+			Animator.play("Idle")
+		States.Walking:
+			Animator.play("Run")
+		States.OnWall:
+			Animator.play("wall")
+		States.Jumping:
+			Animator.play("JumpIdle")
+		States.Falling:
+			Animator.play("FallIdle")
 
 ####################BEGIN PLAY#############################
 func _ready():
+	#$get_node("AnimationPlayer").AnimationStates.
 	pass 
 
 #####################Event Tick#############################
-func _physics_process(delta):
-
+func _physics_process(_delta):
 	#DO GRAVITY
 	Gravity()
 	#movement
 	if Input.is_action_pressed("right"):
-		Move(maxspeed, true, "Run")
+		Move(maxspeed, true)
 	elif Input.is_action_pressed("left"):
-		Move(-maxspeed, false, "Run")
+		Move(-maxspeed, false)
 	else:
 		if is_on_floor():
 			motion.x = lerp(motion.x,0,0.2)
-			$AnimationPlayer.play("Idle")
+			AnimState = States.Idle
 		else:
 			motion.x = lerp(motion.x,0,0.1)
 
@@ -211,17 +218,11 @@ func _physics_process(delta):
 				if Input.is_action_pressed("jump"):
 					Jump()
 				else:
-					JumpEnd()
+					JumpEnd(-jumpend)
 	if isonwall ==true:
-		$AnimationPlayer.play("wall")
-		#$AnimationPlayer.playback_speed(wallslideinterval/10)
-	#else:
-		#$AnimationPlayer.playback_speed(1)
-
-	#If Moveinput is pressed call move
-	
-
-	#end of tick
+		AnimState = States.OnWall
+		
+	HandleAnimation()
 	
 	motion = move_and_slide (motion,up)
 
