@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/MageSpriteTest.png-58284ab7c1e5f1564d43b7e013c1b934.stex"
+path="res://.import/64Color_Tileset_1.png-6dd81c3c66599e5e3a65b57be0721531.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://RawSpriteSheets/MageSpriteTest.png"
-dest_files=[ "res://.import/MageSpriteTest.png-58284ab7c1e5f1564d43b7e013c1b934.stex" ]
+source_file="res://RawSpriteSheets/64Color_Tileset_1.png"
+dest_files=[ "res://.import/64Color_Tileset_1.png-6dd81c3c66599e5e3a65b57be0721531.stex" ]
 
 [params]
 

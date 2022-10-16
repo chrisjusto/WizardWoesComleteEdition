@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/UpdatedCastleShee-1t.png-739f1045c149c7292e06a56089af14e9.stex"
+path="res://.import/64Color_Tileset_0.png-b9857c799128f0cf9c4ff085bf4d37dd.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://RawSpriteSheets/UpdatedCastleShee-1t.png"
-dest_files=[ "res://.import/UpdatedCastleShee-1t.png-739f1045c149c7292e06a56089af14e9.stex" ]
+source_file="res://RawSpriteSheets/64Color_Tileset_0.png"
+dest_files=[ "res://.import/64Color_Tileset_0.png-b9857c799128f0cf9c4ff085bf4d37dd.stex" ]
 
 [params]
 

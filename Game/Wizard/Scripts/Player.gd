@@ -9,6 +9,8 @@ const jump = [450,400,350,320,290,250,200,150]
 const jumpend = 150
 const walljumpvelocityX = [200,100,50,75,220,200,200,0]
 const walljumpvelocityY = [450,375,250,150,290,250,200,150]
+const HitstunLength = 20
+const MaxHealth = 6
 #variables
 var motion = Vector2()
 var isright = true
@@ -25,8 +27,13 @@ var wallanimationplaying = false
 onready var wallcheck = get_node("WallCheck")
 onready var Animator = get_node("AnimationPlayer")
 onready var CeilingCheck = get_node("CeilingCheck")
-enum States {Idle, Walking, OnWall, Jumping, Falling}
+onready var PlayerSprite = get_node("Sprite")
+enum States {Idle, Walking, OnWall, Jumping, Falling, Dead}
 var AnimState = States.Idle
+var Health = 6
+var InHitstun = false
+var HitstunIncrement = 0
+var SpriteVisible = true
 #Movement
 func Move(MaxSpeed, IsRight):
 	if is_on_floor():
@@ -178,52 +185,97 @@ func HandleAnimation ():
 			Animator.play("JumpIdle")
 		States.Falling:
 			Animator.play("FallIdle")
+		States.Dead:
+			Animator.play("Death")
+			print(Animator.current_animation_length)
+
+func Hitstun():
+	if InHitstun == false:
+		InHitstun = true
+		if isright == true:
+			motion.x = -200
+			motion.y = -300
+		else:
+			motion.x = 200
+			motion.y = -300
+			pass
+			
+func HitstunActive():
+	if HitstunIncrement < HitstunLength:
+		HitstunIncrement = HitstunIncrement + 1
+		if HitstunIncrement == 5 or 10 or 15:
+			if SpriteVisible == false:
+				SpriteVisible = true
+				PlayerSprite.visible = true
+			else: 
+				SpriteVisible = false
+				PlayerSprite.visible = false
+	else:
+		PlayerSprite.visible = true
+		InHitstun = false
+		HitstunIncrement = 0
 
 ####################BEGIN PLAY#############################
 func _ready():
-	#$get_node("AnimationPlayer").AnimationStates.
+	Global.SetHealth(Health)
 	pass 
 
 #####################Event Tick#############################
 func _physics_process(_delta):
 	#DO GRAVITY
 	Gravity()
-	#movement
-	if Input.is_action_pressed("right"):
-		Move(maxspeed, true)
-	elif Input.is_action_pressed("left"):
-		Move(-maxspeed, false)
-	else:
-		if is_on_floor():
-			motion.x = lerp(motion.x,0,0.2)
-			AnimState = States.Idle
-		else:
-			motion.x = lerp(motion.x,0,0.1)
-
-	RotateSprite(isright)
-
-	if is_on_floor():
-		motion.x = clamp(motion.x,-maxspeed,maxspeed)
-		if Input.is_action_just_pressed("jump"):
-			JumpInput()
-	else:
-		AirAnimation()
-		if canjump == false:
-			if iswalljumping == false:
-				WallCheck()
-			else:
-				WallJump(isright)
-		else:
-			if iswalljumping == false:
-				if Input.is_action_pressed("jump"):
-					Jump()
-				else:
-					JumpEnd(-jumpend)
-	if isonwall ==true:
-		AnimState = States.OnWall
-		
-	HandleAnimation()
 	
-	motion = move_and_slide (motion,up)
+
+	
+	#movement
+	if Health < 1:
+		motion = move_and_slide (motion,up)
+		AnimState = States.Dead
+		HandleAnimation()
+		pass
+	else:
+		if Input.is_action_pressed("right"):
+			Move(maxspeed, true)
+		elif Input.is_action_pressed("left"):
+			Move(-maxspeed, false)
+		else:
+			if is_on_floor():
+				motion.x = lerp(motion.x,0,0.2)
+				AnimState = States.Idle
+			else:
+				motion.x = lerp(motion.x,0,0.1)
+
+		RotateSprite(isright)
+
+		#handle ground vs air logic
+		if is_on_floor():
+			motion.x = clamp(motion.x,-maxspeed,maxspeed)
+			if Input.is_action_just_pressed("jump"):
+				JumpInput()
+		else:
+			AirAnimation()
+			if canjump == false:
+				if iswalljumping == false:
+					WallCheck()
+				else:
+					WallJump(isright)
+			else:
+				if iswalljumping == false:
+					if Input.is_action_pressed("jump"):
+						Jump()
+					else:
+						JumpEnd(-jumpend)
+		
+		#if on wall do wall animation
+		if isonwall ==true:
+			AnimState = States.OnWall
+		
+		if InHitstun == true:
+			HitstunActive()
+		#Update Animations	
+		HandleAnimation()
+		
+		#move dat player
+		motion = move_and_slide (motion,up)
 
 	pass
