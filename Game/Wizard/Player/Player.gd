@@ -34,6 +34,9 @@ var Health = 6
 var InHitstun = false
 var HitstunIncrement = 0
 var SpriteVisible = true
+var isDead = false
+
+#####################################################################
 #Movement
 func Move(MaxSpeed, IsRight):
 	if is_on_floor():
@@ -215,6 +218,11 @@ func HitstunActive():
 		InHitstun = false
 		HitstunIncrement = 0
 
+func Death():
+	print ("dead")
+	isDead = true
+	$AnimationPlayer.stop(true)
+
 ####################BEGIN PLAY#############################
 func _ready():
 	Global.SetHealth(Health)
@@ -229,9 +237,10 @@ func _physics_process(_delta):
 	
 	#movement
 	if Health < 1:
-		motion = move_and_slide (motion,up)
-		AnimState = States.Dead
-		HandleAnimation()
+		if isDead == false:
+			motion = move_and_slide (Vector2(0,0),Vector2(0,0))
+			AnimState = States.Dead
+			HandleAnimation()
 		pass
 	else:
 		if Input.is_action_pressed("right"):

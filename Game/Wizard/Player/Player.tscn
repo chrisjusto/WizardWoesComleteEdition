@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://RawSpriteSheets/64Color_Player_Sprite_0.png" type="Texture" id=1]
-[ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
+[ext_resource path="res://Player/64Color_Player_Sprite_0.png" type="Texture" id=1]
+[ext_resource path="res://Player/Player.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/AnimationStates.gd" type="Script" id=3]
 
 [sub_resource type="CapsuleShape2D" id=1]
@@ -20,8 +20,22 @@ tracks/0/enabled = true
 tracks/0/keys = {
 "times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 18, 19, 20, 21 ]
+"update": 2,
+"values": [ 19, 20, 21, 22 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.4 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "Death"
+} ]
 }
 
 [sub_resource type="Animation" id=5]

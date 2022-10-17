@@ -1,6 +1,6 @@
 [gd_resource type="TileSet" load_steps=4 format=2]
 
-[ext_resource path="res://RawSpriteSheets/24Color_Tileset.png" type="Texture" id=1]
+[ext_resource path="res://Background Sprites/24Color_Tileset.png" type="Texture" id=1]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 4, 4 )

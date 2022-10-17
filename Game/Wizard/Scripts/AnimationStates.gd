@@ -6,6 +6,8 @@ enum States {Idle, Walking, OnWall, Jumping, Falling}
 var AnimationState = States.Idle# var a = 2
 # var b = "text"
 
+func EndAnimation():
+	pass
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

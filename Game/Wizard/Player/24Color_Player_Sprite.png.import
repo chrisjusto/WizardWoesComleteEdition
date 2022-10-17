@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Lava.png-7ad59a6597e093f4d9fb9505e1055f5b.stex"
+path="res://.import/24Color_Player_Sprite.png-44033d82e897a0acc7b506a6d7cc9032.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://RawSpriteSheets/Lava.png"
-dest_files=[ "res://.import/Lava.png-7ad59a6597e093f4d9fb9505e1055f5b.stex" ]
+source_file="res://Player/24Color_Player_Sprite.png"
+dest_files=[ "res://.import/24Color_Player_Sprite.png-44033d82e897a0acc7b506a6d7cc9032.stex" ]
 
 [params]
 

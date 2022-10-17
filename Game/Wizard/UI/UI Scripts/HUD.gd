@@ -1,6 +1,6 @@
 extends Node2D
 
-onready var Health = get_node("Display/Sprite")
+onready var Health = get_node("Display/Health")
 
 
 # Declare member variables here. Examples:
