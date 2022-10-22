@@ -28,13 +28,17 @@ onready var wallcheck = get_node("WallCheck")
 onready var Animator = get_node("AnimationPlayer")
 onready var CeilingCheck = get_node("CeilingCheck")
 onready var PlayerSprite = get_node("Sprite")
-enum States {Idle, Walking, OnWall, Jumping, Falling, Dead}
+onready var DeathUI = get_node("/root/World/DeathTransition")
+enum States {Idle, Walking, OnWall, Jumping, Falling, Dead, Attack}
 var AnimState = States.Idle
 var Health = 6
 var InHitstun = false
 var HitstunIncrement = 0
 var SpriteVisible = true
 var isDead = false
+var isAttacking = false
+export(Vector2) var CheckpointLocation
+export(bool) var isCheckpointRotRight
 
 #####################################################################
 #Movement
@@ -177,20 +181,32 @@ func Gravity ():
 		motion.y = maxfallspeed	
 #Handles them Animations
 func HandleAnimation ():
-	match AnimState:
-		States.Idle:
-			Animator.play("Idle")
-		States.Walking:
-			Animator.play("Run")
-		States.OnWall:
-			Animator.play("wall")
-		States.Jumping:
-			Animator.play("JumpIdle")
-		States.Falling:
-			Animator.play("FallIdle")
-		States.Dead:
-			Animator.play("Death")
-			print(Animator.current_animation_length)
+	if isAttacking == false:
+		match AnimState:
+			States.Idle:
+				Animator.play("Idle")
+			States.Walking:
+				Animator.play("Run")
+			States.OnWall:
+				Animator.play("wall")
+			States.Jumping:
+				Animator.play("JumpIdle")
+			States.Falling:
+				Animator.play("FallIdle")
+			States.Dead:
+				Animator.play("Death")
+			States.Attack:
+				Animator.play("NormalAttack")
+	else:
+		Animator.play("NormalAttack")
+			
+func Attack():
+	AnimState = States.Attack
+	print("ATTACKBABBY")
+	
+func EndAttack():
+	print("END ATTACK")
+	isAttacking = false
 
 func Hitstun():
 	if InHitstun == false:
@@ -219,9 +235,9 @@ func HitstunActive():
 		HitstunIncrement = 0
 
 func Death():
-	print ("dead")
 	isDead = true
 	$AnimationPlayer.stop(true)
+	DeathUI.DeathAnimation()
 
 ####################BEGIN PLAY#############################
 func _ready():
@@ -241,47 +257,55 @@ func _physics_process(_delta):
 			motion = move_and_slide (Vector2(0,0),Vector2(0,0))
 			AnimState = States.Dead
 			HandleAnimation()
-		pass
-	else:
-		if Input.is_action_pressed("right"):
-			Move(maxspeed, true)
-		elif Input.is_action_pressed("left"):
-			Move(-maxspeed, false)
 		else:
+			pass
+	else:
+		#MOVEMENT
+		if Input.is_action_pressed("right"): #Move Right
+			Move(maxspeed, true)
+		elif Input.is_action_pressed("left"): #Move Left
+			Move(-maxspeed, false)
+		else: #lerp to not moving
 			if is_on_floor():
 				motion.x = lerp(motion.x,0,0.2)
 				AnimState = States.Idle
 			else:
 				motion.x = lerp(motion.x,0,0.1)
-
-		RotateSprite(isright)
-
-		#handle ground vs air logic
-		if is_on_floor():
-			motion.x = clamp(motion.x,-maxspeed,maxspeed)
-			if Input.is_action_just_pressed("jump"):
-				JumpInput()
+		RotateSprite(isright) #Rotate the orientation of player
+		
+		if Input.is_action_just_pressed("attack"):
+			if isAttacking == false:
+				isAttacking = true
+				Attack()
+				AnimState = States.Attack
 		else:
-			AirAnimation()
-			if canjump == false:
-				if iswalljumping == false:
-					WallCheck()
-				else:
-					WallJump(isright)
+		#handle ground vs air logic
+			if is_on_floor():
+				motion.x = clamp(motion.x,-maxspeed,maxspeed)
+				if Input.is_action_just_pressed("jump"):
+					JumpInput()
 			else:
-				if iswalljumping == false:
-					if Input.is_action_pressed("jump"):
-						Jump()
+				AirAnimation()
+				if canjump == false:
+					if iswalljumping == false:
+						WallCheck()
 					else:
-						JumpEnd(-jumpend)
-		
-		#if on wall do wall animation
-		if isonwall ==true:
-			AnimState = States.OnWall
-		
+						WallJump(isright)
+				else:
+					if iswalljumping == false:
+						if Input.is_action_pressed("jump"):
+							Jump()
+						else:
+							JumpEnd(-jumpend)
+			
+			#if on wall do wall animation
+			if isonwall ==true:
+				AnimState = States.OnWall
+			
 		if InHitstun == true:
 			HitstunActive()
 		#Update Animations	
+
 		HandleAnimation()
 		
 		#move dat player
