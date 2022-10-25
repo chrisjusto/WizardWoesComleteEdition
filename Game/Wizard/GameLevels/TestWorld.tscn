@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Tilesets/TilesetsMaps/64Color_Castle_Tileset_0.tres" type="TileSet" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Actors/Lava.tscn" type="PackedScene" id=4]
 [ext_resource path="res://UI/UI Actors/HUD.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Actors/Checkpoint.tscn" type="PackedScene" id=6]
+[ext_resource path="res://SpriteSheets/bird-Sheet-sheet.png" type="Texture" id=7]
 
 [node name="World" type="Node2D"]
 
@@ -109,6 +110,13 @@ z_index = 2
 Damage = 1
 
 [node name="Checkpoint" parent="." instance=ExtResource( 6 )]
-position = Vector2( 88, -304 )
+position = Vector2( 88, -296 )
 RespawnLocation = Vector2( 88, -304 )
 RespawnRotationRight = true
+
+[node name="Bird-Sheet-sheet" type="Sprite" parent="."]
+position = Vector2( 236, -76 )
+scale = Vector2( 0.999999, 1 )
+texture = ExtResource( 7 )
+hframes = 4
+vframes = 2
