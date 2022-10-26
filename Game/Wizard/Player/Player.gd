@@ -202,10 +202,8 @@ func HandleAnimation ():
 			
 func Attack():
 	AnimState = States.Attack
-	print("ATTACKBABBY")
 	
 func EndAttack():
-	print("END ATTACK")
 	isAttacking = false
 
 func Hitstun():

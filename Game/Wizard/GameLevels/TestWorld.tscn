@@ -123,4 +123,7 @@ hframes = 4
 vframes = 2
 
 [node name="KinematicBody2D" parent="." instance=ExtResource( 8 )]
-position = Vector2( 128, -40 )
+position = Vector2( 168, -40 )
+IdleMovement = true
+moveLocation01 = Vector2( 96, -40 )
+moveLocation02 = Vector2( 168, -40 )
