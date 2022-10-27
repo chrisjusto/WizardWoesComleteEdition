@@ -8,13 +8,17 @@ func DeathAnimation():
 	
 func StopAnimation():
 	Animator.stop(true)
+	Animator.play("RESET")
+
+
+func ResetStuff():
 	Player.set_position(Player.CheckpointLocation)
 	Player.RotateSprite(Player.isCheckpointRotRight)
 	Player.Health = 6
 	get_node("/root/World/HUD").UpdateHealth(Player.Health)
 	Player.InHitstun = false
 	Player.isDead = false
-	Animator.play("RESET")
+	Global.ResetEnemies()
 	
 func ResetAnimation():
 	Animator.play("RESET")

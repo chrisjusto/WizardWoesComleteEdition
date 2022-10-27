@@ -4,7 +4,7 @@
 
 [sub_resource type="Animation" id=1]
 resource_name = "Fade"
-length = 2.5
+length = 2.7
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
 tracks/0/interp = 1
@@ -24,9 +24,12 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 2.5 ),
-"transitions": PoolRealArray( 1 ),
+"times": PoolRealArray( 2, 2.7 ),
+"transitions": PoolRealArray( 1, 1 ),
 "values": [ {
+"args": [  ],
+"method": "ResetStuff"
+}, {
 "args": [  ],
 "method": "StopAnimation"
 } ]
