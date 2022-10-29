@@ -59,14 +59,15 @@ func Move(MaxSpeed, IsRight):
 					isright=IsRight
 #Animation Stuff
 func RotateSprite (Direction):
-	if Direction == true:
-		$Sprite.scale.x = 1
-		wallcheck.scale.x=1
-		isright = true
-	else:
-		$Sprite.scale.x = -1
-		wallcheck.scale.x= -1
-		isright = false
+	if isAttacking == false:
+		if Direction == true:
+			$Sprite.scale.x = 1
+			wallcheck.scale.x=1
+			isright = true
+		else:
+			$Sprite.scale.x = -1
+			wallcheck.scale.x= -1
+			isright = false
 func AirAnimation():
 	if motion.y > 0:
 		if isonwall == false:
