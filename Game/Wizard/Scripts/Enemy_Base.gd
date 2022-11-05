@@ -60,7 +60,7 @@ func HandleAnimation(): #ANIMATION STATE MACHINE
 func NoticePlayer(): #This is the function that gets called when sempai is noticed
 	animStates = states.Notice
 	pass
-func IdleMovement(): #this is what I do when its time to FIIIIIIGHT
+func EnemyIdleMovement(): #this is what I do when its time to FIIIIIIGHT
 	var position = get_position()
 		
 	if movingRight == true:
@@ -104,7 +104,7 @@ func _physics_process(delta):
 					NoticePlayer()
 				else:
 					if IdleMovement == true:
-						IdleMovement()
+						EnemyIdleMovement()
 		HandleAnimation()
 		motion = move_and_slide(motion, up)
 	else:

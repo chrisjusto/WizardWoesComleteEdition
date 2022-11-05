@@ -4,9 +4,8 @@
 [ext_resource path="res://Player/Player.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/AnimationStates.gd" type="Script" id=3]
 
-[sub_resource type="CapsuleShape2D" id=1]
-radius = 6.0
-height = 6.0
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 6, 9 )
 
 [sub_resource type="Animation" id=9]
 resource_name = "Death"
@@ -197,7 +196,7 @@ vframes = 10
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -1 )
-shape = SubResource( 1 )
+shape = SubResource( 11 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Death = SubResource( 9 )

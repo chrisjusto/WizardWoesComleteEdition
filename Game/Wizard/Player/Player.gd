@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+class_name Player
+
 #constants
 const up = Vector2(0, -1)
 const gravity = 20
@@ -200,13 +202,10 @@ func HandleAnimation ():
 				Animator.play("NormalAttack")
 	else:
 		Animator.play("NormalAttack")
-			
 func Attack():
 	AnimState = States.Attack
-	
 func EndAttack():
 	isAttacking = false
-
 func Hitstun():
 	if InHitstun == false:
 		InHitstun = true
@@ -217,7 +216,6 @@ func Hitstun():
 			motion.x = 200
 			motion.y = -300
 			pass
-			
 func HitstunActive():
 	if HitstunIncrement < HitstunLength:
 		HitstunIncrement = HitstunIncrement + 1
@@ -232,7 +230,6 @@ func HitstunActive():
 		PlayerSprite.visible = true
 		InHitstun = false
 		HitstunIncrement = 0
-
 func Death():
 	isDead = true
 	$AnimationPlayer.stop(true)
