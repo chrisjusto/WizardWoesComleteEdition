@@ -17,6 +17,7 @@ func ResetStuff():
 	Player.Health = 6
 	get_node("/root/World/HUD").UpdateHealth(Player.Health)
 	Player.InHitstun = false
+	Player.HitstunMovementDisabled = false
 	Player.isDead = false
 	Global.ResetEnemies()
 	

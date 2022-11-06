@@ -13,6 +13,7 @@ const walljumpvelocityX = [200,100,50,75,220,200,200,0]
 const walljumpvelocityY = [450,375,250,150,290,250,200,150]
 const HitstunLength = 20
 const MaxHealth = 6
+const BasicAttackDamage = 1
 #variables
 var motion = Vector2()
 var isright = true
@@ -31,11 +32,13 @@ onready var Animator = get_node("AnimationPlayer")
 onready var CeilingCheck = get_node("CeilingCheck")
 onready var PlayerSprite = get_node("Sprite")
 onready var DeathUI = get_node("/root/World/DeathTransition")
+onready var hitbox = get_node("Sprite/Hitbox_Area")
 enum States {Idle, Walking, OnWall, Jumping, Falling, Dead, Attack}
 var AnimState = States.Idle
 var Health = 6
 var InHitstun = false
 var HitstunIncrement = 0
+var HitstunMovementDisabled = false
 var SpriteVisible = true
 var isDead = false
 var isAttacking = false
@@ -206,15 +209,27 @@ func Attack():
 	AnimState = States.Attack
 func EndAttack():
 	isAttacking = false
+func HitboxOn():
+	hitbox.monitoring = true
+	pass
+func HitboxOff():
+	hitbox.monitoring = false
+	pass
+func _on_Hitbox_Area_body_entered(body):
+	if "Enemy" in body.name:
+		body.Hitstun(BasicAttackDamage)
+
 func Hitstun():
 	if InHitstun == false:
 		InHitstun = true
+		HitstunMovementDisabled = true
+		set_collision_mask_bit(2,false)
 		if isright == true:
-			motion.x = -200
-			motion.y = -300
+			motion.x = -100
+			motion.y = -250
 		else:
-			motion.x = 200
-			motion.y = -300
+			motion.x = 100
+			motion.y = -250
 			pass
 func HitstunActive():
 	if HitstunIncrement < HitstunLength:
@@ -226,12 +241,16 @@ func HitstunActive():
 			else: 
 				SpriteVisible = false
 				PlayerSprite.visible = false
+		if HitstunIncrement == 10:
+			HitstunMovementDisabled = false
 	else:
 		PlayerSprite.visible = true
+		set_collision_mask_bit(2,true)
 		InHitstun = false
 		HitstunIncrement = 0
 func Death():
 	isDead = true
+	set_collision_mask_bit(2,true)
 	$AnimationPlayer.stop(true)
 	DeathUI.DeathAnimation()
 
@@ -257,16 +276,17 @@ func _physics_process(_delta):
 			pass
 	else:
 		#MOVEMENT
-		if Input.is_action_pressed("right"): #Move Right
-			Move(maxspeed, true)
-		elif Input.is_action_pressed("left"): #Move Left
-			Move(-maxspeed, false)
-		else: #lerp to not moving
-			if is_on_floor():
-				motion.x = lerp(motion.x,0,0.2)
-				AnimState = States.Idle
-			else:
-				motion.x = lerp(motion.x,0,0.1)
+		if HitstunMovementDisabled == false:
+			if Input.is_action_pressed("right"): #Move Right
+				Move(maxspeed, true)
+			elif Input.is_action_pressed("left"): #Move Left
+				Move(-maxspeed, false)
+			else: #lerp to not moving
+				if is_on_floor():
+					motion.x = lerp(motion.x,0,0.2)
+					AnimState = States.Idle
+				else:
+					motion.x = lerp(motion.x,0,0.1)
 		RotateSprite(isright) #Rotate the orientation of player
 		
 		if Input.is_action_just_pressed("attack"):
@@ -308,3 +328,6 @@ func _physics_process(_delta):
 		motion = move_and_slide (motion,up)
 
 	pass
+
+
+

@@ -1,10 +1,16 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://SpriteSheets/Enemy_Mushroom.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Enemy_Base.gd" type="Script" id=2]
 
+[sub_resource type="RectangleShape2D" id=14]
+extents = Vector2( 13, 11 )
+
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 6, 14 )
+
 [sub_resource type="RectangleShape2D" id=12]
-extents = Vector2( 8, 11 )
+extents = Vector2( 6.5, 12 )
 
 [sub_resource type="Animation" id=4]
 resource_name = "Attack"
@@ -17,15 +23,35 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2, 3 ]
+"values": [ 22, 23, 24, 25, 26, 27, 28, 11 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.3, 0.5, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "ActivateHitbox"
+}, {
+"args": [  ],
+"method": "DisableHitbox"
+}, {
+"args": [  ],
+"method": "EndAttack"
+} ]
 }
 
 [sub_resource type="Animation" id=5]
 resource_name = "Death"
-length = 0.8
+length = 0.7
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -34,15 +60,29 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2, 3 ]
+"values": [ 29, 30, 31, 32, 33, 34, 35 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.7 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "StopAnimations"
+} ]
 }
 
 [sub_resource type="Animation" id=6]
 resource_name = "Hit"
-length = 0.8
+length = 0.4
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -51,10 +91,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2, 3 ]
+"values": [ 7, 35, 7, 35, 7, 35, 7, 35 ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -174,8 +214,8 @@ tracks/0/keys = {
 radius = 80.0999
 
 [node name="EnemyBase" type="KinematicBody2D"]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 33
 script = ExtResource( 2 )
 maxspeed = 25
 
@@ -183,10 +223,29 @@ maxspeed = 25
 position = Vector2( 0, -16 )
 texture = ExtResource( 1 )
 hframes = 4
-vframes = 6
+vframes = 9
+
+[node name="HitRange_Area" type="Area2D" parent="Sprite"]
+position = Vector2( 0, 16 )
+collision_layer = 4
+collision_mask = 2
+
+[node name="HitRange_Collision" type="CollisionShape2D" parent="Sprite/HitRange_Area"]
+position = Vector2( -8, -11 )
+shape = SubResource( 14 )
+
+[node name="Hit_Area" type="Area2D" parent="Sprite"]
+position = Vector2( 0, 16 )
+collision_layer = 4
+collision_mask = 2
+monitoring = false
+
+[node name="Hit_Collision" type="CollisionShape2D" parent="Sprite/Hit_Area"]
+position = Vector2( -15, -15 )
+shape = SubResource( 13 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -11 )
+position = Vector2( -0.5, -12 )
 shape = SubResource( 12 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -200,10 +259,16 @@ anims/RESET = SubResource( 3 )
 anims/Walk = SubResource( 7 )
 anims/inAir = SubResource( 8 )
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Notice_Area" type="Area2D" parent="."]
+visible = false
+collision_layer = 4
+collision_mask = 2
 
-[node name="NoticeRange" type="CollisionShape2D" parent="Area2D"]
+[node name="Notice_Collision" type="CollisionShape2D" parent="Notice_Area"]
 position = Vector2( 0, -12 )
 shape = SubResource( 11 )
 
-[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_entered" from="Sprite/HitRange_Area" to="." method="_on_HitRange_Area_body_entered"]
+[connection signal="body_exited" from="Sprite/HitRange_Area" to="." method="_on_HitRange_Area_body_exited"]
+[connection signal="body_entered" from="Sprite/Hit_Area" to="." method="_on_Hit_Area_body_entered"]
+[connection signal="body_entered" from="Notice_Area" to="." method="_on_Area2D_body_entered"]

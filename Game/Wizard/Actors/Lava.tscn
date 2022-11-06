@@ -47,6 +47,8 @@ animations = [ {
 } ]
 
 [node name="Area2D" type="Area2D"]
+collision_layer = 16
+collision_mask = 2
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -54,7 +56,6 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 10 )
-frame = 6
 playing = true
 
 [connection signal="body_entered" from="." to="." method="_on_Area2D_body_entered"]
