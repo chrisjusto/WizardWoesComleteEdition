@@ -30,11 +30,13 @@ onready var SpawnLocation = position
 var currentHoldTime = 0
 onready var hitbox = get_node("Sprite/Hit_Area") 
 onready var hitrange = get_node("Sprite/HitRange_Area")
+onready var timer = get_node("Fash_Timer")
 var AttackTarget
 var WaitTimer = 0
 var health = 0
 var hitstunActive = false
 var isDead = false
+
 
 
 func Reset(): #When player dies, this gets called to reset me
@@ -109,6 +111,11 @@ func Attack(): #call me to attack [this is placeholder RN]
 	animStates = states.Attack
 	
 	pass
+	
+func flash():
+	$Sprite.material.set_shader_param("flash_modifier", 1)
+	timer.start()
+	
 
 func _ready():
 	Global.Enemies.append(self)
@@ -219,10 +226,14 @@ func StopAnimations():
 	var Sprite = get_node("Sprite")
 	Sprite.visible = false
 
-func Hitstun(Damage):
-	health = health - Damage
+func Hitstun(incoming_damage):
+	health = health - incoming_damage
 	if health < 0:
 		Death()
 	else:
-		hitstunActive = true
-		WaitTimer = 0
+		flash()
+
+
+func _on_Fash_Timer_timeout():
+	$Sprite.material.set_shader_param("flash_modifier", 0)	
+	pass # Replace with function body.

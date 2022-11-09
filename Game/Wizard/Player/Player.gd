@@ -234,13 +234,13 @@ func Hitstun():
 func HitstunActive():
 	if HitstunIncrement < HitstunLength:
 		HitstunIncrement = HitstunIncrement + 1
-		if HitstunIncrement == 5 or 10 or 15:
+		if HitstunIncrement == 5 or 10 or 15 or 19:
 			if SpriteVisible == false:
 				SpriteVisible = true
-				PlayerSprite.visible = true
+				PlayerSprite.material.set_shader_param("flash_modifier", 0)	
 			else: 
 				SpriteVisible = false
-				PlayerSprite.visible = false
+				PlayerSprite.material.set_shader_param("flash_modifier", 1)	
 		if HitstunIncrement == 10:
 			HitstunMovementDisabled = false
 	else:
@@ -331,3 +331,8 @@ func _physics_process(_delta):
 
 
 
+
+
+func _on_HitstunTimer_timeout():
+	
+	pass # Replace with function body.

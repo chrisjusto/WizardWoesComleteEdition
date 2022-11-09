@@ -1,7 +1,14 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://SpriteSheets/Enemy_Mushroom.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Enemy_Base.gd" type="Script" id=2]
+[ext_resource path="res://Shaders/SpriteShaders.gdshader" type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=16]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/flash_color = Color( 0.780392, 0.862745, 0.815686, 1 )
+shader_param/flash_modifier = 0.0
 
 [sub_resource type="RectangleShape2D" id=14]
 extents = Vector2( 13, 11 )
@@ -220,12 +227,14 @@ script = ExtResource( 2 )
 maxspeed = 25
 
 [node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 16 )
 position = Vector2( 0, -16 )
 texture = ExtResource( 1 )
 hframes = 4
 vframes = 9
 
 [node name="HitRange_Area" type="Area2D" parent="Sprite"]
+visible = false
 position = Vector2( 0, 16 )
 collision_layer = 4
 collision_mask = 2
@@ -235,6 +244,7 @@ position = Vector2( -8, -11 )
 shape = SubResource( 14 )
 
 [node name="Hit_Area" type="Area2D" parent="Sprite"]
+visible = false
 position = Vector2( 0, 16 )
 collision_layer = 4
 collision_mask = 2
@@ -245,6 +255,7 @@ position = Vector2( -15, -15 )
 shape = SubResource( 13 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( -0.5, -12 )
 shape = SubResource( 12 )
 
@@ -268,7 +279,11 @@ collision_mask = 2
 position = Vector2( 0, -12 )
 shape = SubResource( 11 )
 
+[node name="Fash_Timer" type="Timer" parent="."]
+wait_time = 0.1
+
 [connection signal="body_entered" from="Sprite/HitRange_Area" to="." method="_on_HitRange_Area_body_entered"]
 [connection signal="body_exited" from="Sprite/HitRange_Area" to="." method="_on_HitRange_Area_body_exited"]
 [connection signal="body_entered" from="Sprite/Hit_Area" to="." method="_on_Hit_Area_body_entered"]
 [connection signal="body_entered" from="Notice_Area" to="." method="_on_Area2D_body_entered"]
+[connection signal="timeout" from="Fash_Timer" to="." method="_on_Fash_Timer_timeout"]

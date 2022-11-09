@@ -123,14 +123,14 @@ hframes = 4
 vframes = 2
 
 [node name="Enemy_Mushroom" parent="." instance=ExtResource( 8 )]
-position = Vector2( 160, -40 )
+position = Vector2( 188, -160 )
 IdleMovement = true
 HasActiveAttack = true
-moveLocation01 = Vector2( 96, -40 )
-moveLocation02 = Vector2( 168, -40 )
+moveLocation01 = Vector2( 104, -160 )
+moveLocation02 = Vector2( 256, -160 )
 maxspeed = 50
 holdTime = 30
-Damage = 2
+Damage = 1
 PreAttackWait = 30
 PostAttackWait = 30
 MaxHealth = 2

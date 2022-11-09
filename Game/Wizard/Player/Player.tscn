@@ -1,11 +1,17 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Player/64Color_Player_Sprite_10.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/AnimationStates.gd" type="Script" id=3]
+[ext_resource path="res://Shaders/SpriteShaders.gdshader" type="Shader" id=4]
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 4 )
+shader_param/flash_color = Color( 0.780392, 0.862745, 0.815686, 1 )
+shader_param/flash_modifier = 0.0
 
 [sub_resource type="RectangleShape2D" id=12]
-extents = Vector2( 3.5, 11.5 )
+extents = Vector2( 8, 12 )
 
 [sub_resource type="RectangleShape2D" id=11]
 extents = Vector2( 6, 9 )
@@ -200,21 +206,24 @@ script = ExtResource( 2 )
 isCheckpointRotRight = true
 
 [node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 13 )
 position = Vector2( 0, -8 )
 texture = ExtResource( 1 )
 hframes = 3
 vframes = 10
 
 [node name="Hitbox_Area" type="Area2D" parent="Sprite"]
+visible = false
 collision_layer = 32
 collision_mask = 4
 monitoring = false
 
 [node name="Hitbox_Collision" type="CollisionShape2D" parent="Sprite/Hitbox_Area"]
-position = Vector2( 9.5, 4.5 )
+position = Vector2( 14, 4 )
 shape = SubResource( 12 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, -1 )
 shape = SubResource( 11 )
 
@@ -231,12 +240,18 @@ anims/wall = SubResource( 8 )
 script = ExtResource( 3 )
 
 [node name="WallCheck" type="RayCast2D" parent="."]
+visible = false
 enabled = true
 cast_to = Vector2( 8, 0 )
 
 [node name="CeilingCheck" type="RayCast2D" parent="."]
+visible = false
 scale = Vector2( 2, 1 )
 enabled = true
 cast_to = Vector2( 0, -11 )
 
+[node name="HitstunTimer" type="Timer" parent="."]
+wait_time = 0.2
+
 [connection signal="body_entered" from="Sprite/Hitbox_Area" to="." method="_on_Hitbox_Area_body_entered"]
+[connection signal="timeout" from="HitstunTimer" to="." method="_on_HitstunTimer_timeout"]
