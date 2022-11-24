@@ -257,6 +257,7 @@ func Death():
 ####################BEGIN PLAY#############################
 func _ready():
 	Global.SetHealth(Health)
+	print ("READY")
 	pass 
 
 #####################Event Tick#############################

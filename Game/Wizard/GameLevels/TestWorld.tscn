@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Tilesets/TilesetsMaps/64Color_Castle_Tileset_0.tres" type="TileSet" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Actors/Checkpoint.tscn" type="PackedScene" id=6]
 [ext_resource path="res://SpriteSheets/bird-Sheet-sheet.png" type="Texture" id=7]
 [ext_resource path="res://Actors/Enemy_Base.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Actors/SceneTransition.tscn" type="PackedScene" id=9]
 
 [node name="World" type="Node2D"]
 
@@ -134,3 +135,8 @@ Damage = 1
 PreAttackWait = 30
 PostAttackWait = 30
 MaxHealth = 2
+
+[node name="Area2D" parent="." instance=ExtResource( 9 )]
+position = Vector2( 344, -432 )
+scale = Vector2( 6, 1 )
+Level = "res://GameLevels/TestWorld_2.tscn"
