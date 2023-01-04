@@ -22,7 +22,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite2" type="Sprite" parent="."]
 position = Vector2( 12, -4 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12
@@ -62,7 +61,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite5" type="Sprite" parent="."]
 position = Vector2( 20, 12 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12
@@ -76,7 +74,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite6" type="Sprite" parent="."]
 position = Vector2( 12, 12 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12
@@ -116,7 +113,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite9" type="Sprite" parent="."]
 position = Vector2( 4, 20 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12
@@ -130,7 +126,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite10" type="Sprite" parent="."]
 position = Vector2( 12, 20 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12
@@ -157,7 +152,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite12" type="Sprite" parent="."]
 position = Vector2( 12, 28 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12
@@ -184,7 +178,6 @@ shape = SubResource( 1 )
 
 [node name="Sprite14" type="Sprite" parent="."]
 position = Vector2( 12, 36 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 hframes = 17
 vframes = 12

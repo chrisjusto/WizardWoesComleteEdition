@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scripts/Scpt_Character.gd" type="Script" id=1]
 [ext_resource path="res://Shaders/Sprite_Shader.gdshader" type="Shader" id=2]
@@ -14,6 +14,61 @@ shader_param/flash_modifier = 0.0
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 3, 9 )
+
+[sub_resource type="Animation" id=5]
+resource_name = "Death"
+
+[sub_resource type="Animation" id=6]
+resource_name = "Fall"
+
+[sub_resource type="Animation" id=7]
+resource_name = "Hitstun"
+
+[sub_resource type="Animation" id=8]
+resource_name = "Idle"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "Jump"
+
+[sub_resource type="Animation" id=10]
+resource_name = "N_Attack"
+
+[sub_resource type="Animation" id=11]
+resource_name = "S_Attack"
+
+[sub_resource type="Animation" id=12]
+resource_name = "Walk"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 5, 6, 7, 8 ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "Wall_Slide"
 
 [node name="Character" type="KinematicBody2D"]
 collision_layer = 3
@@ -35,6 +90,15 @@ position = Vector2( 9, 0 )
 shape = SubResource( 2 )
 
 [node name="Animation_Player" type="AnimationPlayer" parent="."]
+anims/Death = SubResource( 5 )
+anims/Fall = SubResource( 6 )
+anims/Hitstun = SubResource( 7 )
+anims/Idle = SubResource( 8 )
+anims/Jump = SubResource( 9 )
+anims/N_Attack = SubResource( 10 )
+anims/S_Attack = SubResource( 11 )
+anims/Walk = SubResource( 12 )
+anims/Wall_Slide = SubResource( 13 )
 
 [node name="Hitstun_Timer" type="Timer" parent="."]
 

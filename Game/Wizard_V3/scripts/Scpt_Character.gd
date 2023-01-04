@@ -5,8 +5,8 @@ class_name Character
 #enums used in the character logic
 enum direction {Right, Left} #used for many things that need to determine direction
 enum base_states {On_Ground, In_Air, Dead, Hitstun} #base states for the player
-enum ground_states {Idle, Moving, G_Normal_Attacking, G_Special_Attack} #possible actions while grounded
-enum airiel_states {Jumping, Falling, On_Wall, A_Normal_Attacking, A_Special_Attacking} #possible actions while in air
+enum ground_states {Idle, Moving, G_Normal_Attack, G_Special_Attack} #possible actions while grounded
+enum airiel_states {Jumping, Falling, On_Wall, A_Normal_Attack, A_Special_Attack} #possible actions while in air
 
 #Get References to actors underneath the character class
 onready var game_manager = $"/root/GameManager" #reference to the game manager, use to pass things between actors and store variables between scenes
@@ -32,16 +32,17 @@ export(float) var airiel_acceleration #the speed at which a character can go fro
 
 #variables used in various functions for base character
 var motion = Vector2() #this variable is used to store the movement applied to the character in x and y
-var state = base_states.On_Ground #what is the characters main state?
+var base_action = base_states.On_Ground #what is the characters main state?
 var grounded_action = ground_states.Idle #what action is the character currently doing on ground
 var airiel_action = airiel_states.Falling #what is the action the character is currently doing in air
 var character_horizontal_rotation = direction.Right #what is the characters rotation
 var active_gravity = gravity #somethings may change the gravity effecting the character, thats what this variable is for
+var active_animation = "Idle"
 
 #movement related functions
 #Handle the movement of the character
 func _horizontal_movement(speed):
-	match state:
+	match base_action:
 		base_states.On_Ground: #use grounded acceleration if player is on ground
 			motion.x = lerp(motion.x,speed,grounded_acceleration)
 		base_states.In_Air: #use airiel accelerarion if the player is in air
@@ -64,7 +65,7 @@ func _gravity():
 #Handle the rotation of the character
 func _rotate_character(character_direction):
 	#if the character is doing an attack action, dont rotate the sprite EVER, otherwise, you are free to rotate
-	if grounded_action == ground_states.G_Normal_Attacking or grounded_action == ground_states.G_Special_Attack or airiel_action == airiel_states.A_Normal_Attacking or airiel_action == airiel_states.A_Special_Attack:
+	if grounded_action == ground_states.G_Normal_Attack or grounded_action == ground_states.G_Special_Attack or airiel_action == airiel_states.A_Normal_Attack or airiel_action == airiel_states.A_Special_Attack:
 		pass
 	else:
 		match character_direction:
@@ -100,11 +101,11 @@ func _update_health(damage, health):
 	health -= damage
 	#if the players health is less than or equal to 0 set them to the dead state
 	if health <= 0:
-		state = base_states.Dead
+		base_action = base_states.Dead
 		return health
 	#Otherwise, start the hitstun state
 	else:
-		state = base_states.Hitstun
+		base_action = base_states.Hitstun
 		hitstun_timer.start()
 		_flash()
 		return health
@@ -125,13 +126,13 @@ func _on_hitbox_entered(body):
 
 #when hitstun ends, revert back to in air or grounded main state (unless of course they are dead)
 func _on_Hitstun_Timer_end():
-	if state == base_states.Hitstun:
+	if base_action == base_states.Hitstun:
 		if is_on_floor():
-			state = base_states.On_Ground
+			base_action = base_states.On_Ground
 			grounded_action = ground_states.Idle
 			airiel_action = airiel_states.Falling
 		else:
-			state = base_states.In_Air
+			base_action = base_states.In_Air
 			grounded_action = ground_states.Idle
 			airiel_action = airiel_states.Falling
 
@@ -144,3 +145,24 @@ func _flash():
 func _on_Flash_Timer_end():
 	sprite.material.set_shader_param("flash_modifier",0)
 	pass # Replace with function body.
+
+func _play_animation(animation_name):
+	animation_player.play(animation_name)
+
+func _animation_manager():
+	match base_action:
+		base_states.On_Ground:
+			match grounded_action:
+				ground_states.Idle:
+					_play_animation("Idle")
+					active_animation = "Idle"
+				ground_states.Moving:
+					_play_animation("Walk")
+					active_animation = "Walk"
+				ground_states.G_Normal_Attack:
+					_play_animation("N_Attack")
+					active_animation = "N_Attack"
+				ground_states.G_Special_Attack:
+					_play_animation("S_Attack")
+					active_animation = "S_Attack"
+	pass

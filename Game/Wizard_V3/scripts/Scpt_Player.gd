@@ -23,18 +23,23 @@ func _physics_process(delta):
 	_gravity()
 	
 	#call the jump input
-	if Input.is_action_just_pressed("jump") and state == base_states.On_Ground:
+	if Input.is_action_just_pressed("jump") and base_action == base_states.On_Ground:
 		_jump_input()
 		pass
 		
 	#call movement right and left or return to standing
 	if Input.is_action_pressed("right"):
 		_horizontal_movement(max_speed)
+		_rotate_character(direction.Right)
+		grounded_action = ground_states.Moving
 	elif Input.is_action_pressed("left"):
 		_horizontal_movement(-max_speed)
+		_rotate_character(direction.Left)
+		grounded_action = ground_states.Moving
 	else:
 		_horizontal_movement(0)
-		
+		grounded_action = ground_states.Idle
 	#update the players motion variable to be how the character moves
+	_animation_manager()
 	_update_movement()
 	pass
