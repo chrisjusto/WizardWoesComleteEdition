@@ -12,7 +12,7 @@ func UpdateHealth (NewHealth):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	UpdateHealth(Global.CurrentHealth)
+#	UpdateHealth(Global.CurrentHealth)
 	
 	pass # Replace with function body.
 

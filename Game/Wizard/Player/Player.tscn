@@ -240,12 +240,10 @@ anims/wall = SubResource( 8 )
 script = ExtResource( 3 )
 
 [node name="WallCheck" type="RayCast2D" parent="."]
-visible = false
 enabled = true
 cast_to = Vector2( 8, 0 )
 
 [node name="CeilingCheck" type="RayCast2D" parent="."]
-visible = false
 scale = Vector2( 2, 1 )
 enabled = true
 cast_to = Vector2( 0, -11 )

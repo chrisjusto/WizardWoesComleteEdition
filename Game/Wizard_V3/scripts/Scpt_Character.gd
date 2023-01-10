@@ -6,7 +6,7 @@ class_name Character
 enum direction {Right, Left} #used for many things that need to determine direction
 enum base_states {On_Ground, In_Air, Dead, Hitstun} #base states for the player
 enum ground_states {Idle, Moving, G_Normal_Attack, G_Special_Attack} #possible actions while grounded
-enum airiel_states {Jumping, Falling, On_Wall, A_Normal_Attack, A_Special_Attack} #possible actions while in air
+enum airiel_states {Jumping, Falling, On_Wall, A_Normal_Attack, A_Special_Attack, Wall_Jumping} #possible actions while in air
 
 #Get References to actors underneath the character class
 onready var game_manager = $"/root/GameManager" #reference to the game manager, use to pass things between actors and store variables between scenes
@@ -37,7 +37,6 @@ var grounded_action = ground_states.Idle #what action is the character currently
 var airiel_action = airiel_states.Falling #what is the action the character is currently doing in air
 var character_horizontal_rotation = direction.Right #what is the characters rotation
 var active_gravity = gravity #somethings may change the gravity effecting the character, thats what this variable is for
-var active_animation = "Idle"
 
 #movement related functions
 #Handle the movement of the character
@@ -45,8 +44,15 @@ func _horizontal_movement(speed):
 	match base_action:
 		base_states.On_Ground: #use grounded acceleration if player is on ground
 			motion.x = lerp(motion.x,speed,grounded_acceleration)
-		base_states.In_Air: #use airiel accelerarion if the player is in air
-			motion.x = lerp(motion.x,speed,airiel_acceleration)
+		base_states.In_Air:
+			
+			#wall wall jump acceleration
+			if airiel_action == airiel_states.Wall_Jumping:
+				motion.x = lerp(motion.x,speed,.75)
+			
+			#use airiel accelerarion if the player is in air
+			else:
+				motion.x = lerp(motion.x,speed,airiel_acceleration)
 		base_states.Hitstun: #stop movement if player is in hitstun
 			motion.x = 0
 		base_states.Dead: #stop movement if player is dead
@@ -150,19 +156,32 @@ func _play_animation(animation_name):
 	animation_player.play(animation_name)
 
 func _animation_manager():
-	match base_action:
-		base_states.On_Ground:
-			match grounded_action:
-				ground_states.Idle:
-					_play_animation("Idle")
-					active_animation = "Idle"
-				ground_states.Moving:
-					_play_animation("Walk")
-					active_animation = "Walk"
-				ground_states.G_Normal_Attack:
-					_play_animation("N_Attack")
-					active_animation = "N_Attack"
-				ground_states.G_Special_Attack:
-					_play_animation("S_Attack")
-					active_animation = "S_Attack"
+	if base_action == base_states.On_Ground:
+		match grounded_action:
+			ground_states.Idle:
+				_play_animation("Idle")
+			ground_states.Moving:
+				_play_animation("Walk")
+			ground_states.G_Normal_Attack:
+				_play_animation("N_Attack")
+			ground_states.G_Special_Attack:
+				_play_animation("S_Attack")
+	elif base_action == base_states.In_Air:
+		match airiel_action:
+			airiel_states.Falling:
+				_play_animation("Fall")
+			airiel_states.Jumping:
+				_play_animation("Jump")
+			airiel_states.On_Wall:
+				_play_animation("Wall_Slide")
 	pass
+
+func _on_ground():
+	if base_action == base_states.Hitstun or base_action == base_states.Dead:
+		pass
+	else:
+		if is_on_floor() == true:
+			base_action = base_states.On_Ground
+		else:
+			base_action = base_states.In_Air
+

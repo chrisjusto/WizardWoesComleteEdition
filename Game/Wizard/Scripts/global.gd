@@ -21,8 +21,8 @@ func ResetEnemies():
 
 func _ready():
 	#starting player HP
-	if p_currenthealth <= 0:
-		p_currenthealth = p_maxhealth
-	p_maxhealth = startinghealth
+#	if p_currenthealth <= 0:
+#		p_currenthealth = p_maxhealth
+#	p_maxhealth = startinghealth
 	pass # Replace with function body.
 
